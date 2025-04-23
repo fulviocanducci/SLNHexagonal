@@ -1,0 +1,127 @@
+﻿using Application.DTOs.Customer;
+using Application.DTOs.Id;
+using Application.Interfaces;
+using Domain.Entities;
+using Infrastructure.Interfaces;
+using Mapster;
+using Microsoft.AspNetCore.Mvc;
+using WebAPI.Extensions;
+
+namespace WebAPI.Controllers
+{
+   [Route("api/[controller]")]
+   [ApiController]
+   public class CustomersController : ControllerBase
+   {
+      private readonly ICustomerService CustomerService;
+      private readonly IUnitOfWork UnitOfWork;
+      public CustomersController(ICustomerService customerService, IUnitOfWork unitOfWork)
+      {
+         CustomerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
+         UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+      }
+
+      [HttpGet]
+      public async Task<ActionResult<IEnumerable<CustomerResponse>>> Get()
+      {
+         IEnumerable<CustomerResponse> items = await CustomerService.GetAllAsync(o => o.Name);
+         return Ok(items);
+      }
+
+      // GET api/<CustomersController>/5
+      [HttpGet("{id}")]
+      public async Task<ActionResult<CustomerResponse>> Get(long id)
+      {
+         var customerResponse = await CustomerService.GetAsync(id);
+         if (customerResponse == null)
+         {
+            return NotFound($"Customer {id} not found ...");
+         }
+         return Ok(customerResponse);
+      }
+
+      // POST api/<CustomersController>
+      [HttpPost]
+      public async Task<ActionResult<CustomerResponse>> Post([FromBody] CustomerCreateRequest value)
+      {
+         try
+         {
+            if (ModelState.IsProblem())
+            {
+               return BadRequest(ModelState);
+            }
+            Customer data = await CustomerService.AddAsync(value);
+            if (await UnitOfWork.CommitChangesAsync() == false)
+            {
+               return BadRequest($"Customer add Bad Request");
+            }
+            CustomerResponse customerResponse = data.Adapt<CustomerResponse>();
+            RouteId<long> routeId = RouteId<long>.Create(customerResponse.Id);
+            return CreatedAtAction(nameof(Get), routeId, customerResponse);
+         }
+         catch (Exception)
+         {
+            throw;
+         }         
+      }
+
+      // PUT api/<CustomersController>/5
+      [HttpPut("{id}")]
+      public async Task<ActionResult<CustomerResponse>> Put(int id, [FromBody] CustomerUpdateRequest value)
+      {
+         try
+         {
+            if (id <= 0)
+            {
+               return BadRequest($"Id update error Bad Request");
+            }
+            if (ModelState.IsProblem())
+            {
+               return BadRequest(ModelState);
+            }
+            Customer data = await CustomerService.UpdateAsync(value);
+            if ( data == null)
+            {
+               return BadRequest($"Customer update error Bad Request");
+            }
+            if (await UnitOfWork.CommitChangesAsync() == false)
+            {
+               return BadRequest($"Customer update error Bad Request");
+            }
+            CustomerResponse customerResponse = data.Adapt<CustomerResponse>();
+            return Ok(customerResponse);
+         }
+         catch (Exception)
+         {
+            throw;
+         }        
+      }
+
+      [HttpDelete("{id}")]
+      public async Task<ActionResult> Delete(int id)
+      {
+         try
+         {
+            if (id <= 0)
+            {
+               return BadRequest($"Id delete error Bad Request");
+            }
+            bool customerExists = await CustomerService.AnyAsync(id);
+            if (customerExists == false)
+            {
+               return NotFound($"Customer {id} not found ...");
+            }
+            await CustomerService.DeleteAsync(id);
+            if (await UnitOfWork.CommitChangesAsync() == false)
+            {
+               return BadRequest($"Customer delete error Bad Request");
+            }
+            return Ok($"Customer {id} deleted");
+         }
+         catch (Exception)
+         {
+            throw;
+         }
+      }
+   }
+}
