@@ -30,14 +30,13 @@ namespace Application.Validators.Customer
             });
          RuleFor(x => x.Status)
             .Configure(x => x.PropertyName = "status")
+            .NotNull().WithMessage("Status is required.")
             .Must(x => x == true || x == false).WithMessage("Status must be true or false.");
       }
 
       protected bool IsEmailExistByIdOrNotExists(long id, string email)
       {
-         var result = _customerService
-            .GetAsync(x => x.Email.Value == email)
-            .Result;
+         var result = _customerService.Get(x => x.Email.Value == email);
          if (result == null)
          {
             return true;

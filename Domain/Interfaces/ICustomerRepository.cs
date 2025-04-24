@@ -9,7 +9,9 @@ namespace Domain.Interfaces
       IUpdateAsync<Customer>,
       IDeleteAsync<Customer, long>,
       IAnyAsync<Customer>,
-      IFindAsync<Customer, long>
+      IAny<Customer>,
+      IFindAsync<Customer, long>,
+      IGet<Customer, long>
    {
    }
 }

@@ -21,6 +21,11 @@ namespace Infrastructure.Repositories
          return Task.CompletedTask;
       }
 
+      public bool Any(Expression<Func<Customer, bool>> where)
+      {
+         return _dataAccess.Customers.Any(where);
+      }
+
       public Task<bool> AnyAsync(Expression<Func<Customer, bool>> where)
       {
          return _dataAccess.Customers.AnyAsync(where);
@@ -52,6 +57,20 @@ namespace Infrastructure.Repositories
       public Task<Customer> FindAsync(Expression<Func<Customer, bool>> where)
       {
          return _dataAccess.Customers.Where(where).FirstOrDefaultAsync();
+      }
+
+      public Customer Get(long id)
+      {
+         return _dataAccess
+            .Customers
+            .AsNoTracking()
+            .Where(x => x.Id == id)
+            .FirstOrDefault();
+      }
+
+      public Customer Get(Expression<Func<Customer, bool>> where)
+      {
+         return Get(where);
       }
 
       public async Task<IEnumerable<Customer>> GetAllAsync<Tkey>(Expression<Func<Customer, Tkey>> orderBy)

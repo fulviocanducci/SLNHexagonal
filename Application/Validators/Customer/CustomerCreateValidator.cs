@@ -1,8 +1,6 @@
 ﻿using Application.DTOs.Customer;
 using Application.Interfaces;
 using FluentValidation;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Validators.Customer
 {
@@ -29,14 +27,12 @@ namespace Application.Validators.Customer
                   .Configure(x => x.PropertyName = "email")
                   .Must(IsEmailNotExist).WithMessage("Email already exists.");
             });
-            
+
       }
 
       protected bool IsEmailNotExist(string email)
       {
-         return _customerService
-            .AnyAsync(x => x.Email.Value.Contains(email))
-            .Result == false;
+         return _customerService.Any(x => x.Email.Value == email) == false;
       }
    }
 }

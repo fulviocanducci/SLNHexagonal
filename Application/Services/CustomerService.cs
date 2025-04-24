@@ -35,6 +35,16 @@ namespace Application.Services
          return null;
       }
 
+      public bool Any(Expression<Func<Customer, bool>> where)
+      {
+         return _customerRepository.Any(where);
+      }
+
+      public bool Any(long id)
+      {
+         return _customerRepository.Any(x => x.Id == id);
+      }
+
       public Task<bool> AnyAsync(Expression<Func<Customer, bool>> where)
       {
          return _customerRepository.AnyAsync(where);
@@ -48,6 +58,26 @@ namespace Application.Services
       public Task DeleteAsync(long id)
       {
          return _customerRepository.DeleteAsync(id);
+      }
+
+      public CustomerResponse Get(long id)
+      {
+         var data = _customerRepository.Get(id);
+         if (data == null)
+         {
+            return null;
+         }
+         return data.Adapt<CustomerResponse>();
+      }
+
+      public CustomerResponse Get(Expression<Func<Customer, bool>> where)
+      {
+         var data = _customerRepository.Get(where);
+         if (data == null)
+         {
+            return null;
+         }
+         return data.Adapt<CustomerResponse>();
       }
 
       public Task<IEnumerable<CustomerResponse>> GetAllAsync<TKey>(Expression<Func<Customer, TKey>> orderBy)
@@ -89,7 +119,7 @@ namespace Application.Services
          }
          data.UpdateEmail(new Email(customer.Email));
          data.UpdateName(new Name(customer.Name));
-         data.UpdateStatus(customer.Status);         
+         data.UpdateStatus(customer.Status);
          return data;
       }
    }

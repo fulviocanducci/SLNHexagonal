@@ -5,12 +5,14 @@ using Domain.Entities;
 using Infrastructure.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
    [Route("api/[controller]")]
    [ApiController]
+   [Produces(MediaTypeNames.Application.Json)]
    public class CustomersController : ControllerBase
    {
       private readonly ICustomerService CustomerService;
@@ -22,14 +24,17 @@ namespace WebAPI.Controllers
       }
 
       [HttpGet]
+      [ProducesResponseType(typeof(IEnumerable<CustomerResponse>), StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public async Task<ActionResult<IEnumerable<CustomerResponse>>> Get()
       {
          IEnumerable<CustomerResponse> items = await CustomerService.GetAllAsync(o => o.Name.Value);
          return Ok(items);
       }
 
-      // GET api/<CustomersController>/5
       [HttpGet("{id}")]
+      [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public async Task<ActionResult<CustomerResponse>> Get(long id)
       {
          var customerResponse = await CustomerService.GetAsync(id);
@@ -40,8 +45,10 @@ namespace WebAPI.Controllers
          return Ok(customerResponse);
       }
 
-      // POST api/<CustomersController>
       [HttpPost]
+      [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status400BadRequest)]
+      [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public async Task<ActionResult<CustomerResponse>> Post([FromBody] CustomerCreateRequest value)
       {
          try
@@ -65,8 +72,11 @@ namespace WebAPI.Controllers
          }
       }
 
-      // PUT api/<CustomersController>/5
       [HttpPut("{id}")]
+      [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status304NotModified)]
+      [ProducesResponseType(StatusCodes.Status400BadRequest)]
+      [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public async Task<ActionResult<CustomerResponse>> Put(int id, [FromBody] CustomerUpdateRequest value)
       {
          try
@@ -86,7 +96,7 @@ namespace WebAPI.Controllers
             }
             if (await UnitOfWork.CommitChangesAsync() == false)
             {
-               return BadRequest($"Customer update error Bad Request");
+               return StatusCode(StatusCodes.Status304NotModified, value);
             }
             CustomerResponse customerResponse = data.Adapt<CustomerResponse>();
             return Ok(customerResponse);
@@ -98,6 +108,10 @@ namespace WebAPI.Controllers
       }
 
       [HttpDelete("{id}")]
+      [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status400BadRequest)]
+      [ProducesResponseType(StatusCodes.Status404NotFound)]
+      [ProducesResponseType(StatusCodes.Status500InternalServerError)]
       public async Task<ActionResult> Delete(int id)
       {
          try
