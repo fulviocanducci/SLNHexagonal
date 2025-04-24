@@ -23,7 +23,13 @@ namespace Application.Validators.Customer
             .Configure(x => x.PropertyName = "email")
             .NotEmpty().WithMessage("Date of birth is required.")
             .EmailAddress().WithMessage("Email is not valid.")
-            .Must(IsEmailNotExist).WithMessage("Email already exists.");
+            .DependentRules(() =>
+            {
+               RuleFor(x => x.Email)
+                  .Configure(x => x.PropertyName = "email")
+                  .Must(IsEmailNotExist).WithMessage("Email already exists.");
+            });
+            
       }
 
       protected bool IsEmailNotExist(string email)

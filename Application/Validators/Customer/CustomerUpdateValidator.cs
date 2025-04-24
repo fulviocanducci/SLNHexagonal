@@ -1,8 +1,6 @@
 ﻿using Application.DTOs.Customer;
 using Application.Interfaces;
 using FluentValidation;
-using System.Threading;
-using System.Threading.Tasks;
 namespace Application.Validators.Customer
 {
    public class CustomerUpdateValidator : AbstractValidator<CustomerUpdateRequest>
@@ -22,9 +20,14 @@ namespace Application.Validators.Customer
             .Length(3, 100).WithMessage("Name must be between 3 and 100 characters.");
          RuleFor(x => x.Email)
             .Configure(x => x.PropertyName = "email")
-            .NotEmpty().WithMessage("Date of birth is required.")
+            .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("Email is not valid.")
-            .Must((item, email) => IsEmailExistByIdOrNotExists(item.Id, email)).WithMessage("Email already exists.");
+            .DependentRules(() =>
+            {
+               RuleFor(x => x.Email)
+                  .Configure(x => x.PropertyName = "email")
+                  .Must((item, email) => IsEmailExistByIdOrNotExists(item.Id, email)).WithMessage("Email already exists.");
+            });
          RuleFor(x => x.Status)
             .Configure(x => x.PropertyName = "status")
             .Must(x => x == true || x == false).WithMessage("Status must be true or false.");
