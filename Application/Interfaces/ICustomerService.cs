@@ -13,6 +13,7 @@ namespace Application.Interfaces
       Task<Customer> UpdateAsync(CustomerUpdateRequest customer);
       Task DeleteAsync(long id);
       Task<CustomerResponse> GetAsync(long id);
+      Task<CustomerResponse> GetAsync(Expression<Func<Customer, bool>> where);
       Task<IEnumerable<CustomerResponse>> GetAllAsync<TKey>(Expression<Func<Customer, TKey>> orderBy);
       Task<bool> AnyAsync(Expression<Func<Customer, bool>> where);
       Task<bool> AnyAsync(long id);

@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
       [HttpGet]
       public async Task<ActionResult<IEnumerable<CustomerResponse>>> Get()
       {
-         IEnumerable<CustomerResponse> items = await CustomerService.GetAllAsync(o => o.Name);
+         IEnumerable<CustomerResponse> items = await CustomerService.GetAllAsync(o => o.Name.Value);
          return Ok(items);
       }
 
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
          catch (Exception)
          {
             throw;
-         }         
+         }
       }
 
       // PUT api/<CustomersController>/5
@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
                return BadRequest(ModelState);
             }
             Customer data = await CustomerService.UpdateAsync(value);
-            if ( data == null)
+            if (data == null)
             {
                return BadRequest($"Customer update error Bad Request");
             }
@@ -94,7 +94,7 @@ namespace WebAPI.Controllers
          catch (Exception)
          {
             throw;
-         }        
+         }
       }
 
       [HttpDelete("{id}")]

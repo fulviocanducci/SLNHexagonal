@@ -70,17 +70,26 @@ namespace Application.Services
             });
       }
 
+      public Task<CustomerResponse> GetAsync(Expression<Func<Customer, bool>> where)
+      {
+         return _customerRepository.GetAsync(where)
+            .ContinueWith(task =>
+            {
+               Customer customer = task.Result;
+               return customer.Adapt<CustomerResponse>();
+            });
+      }
+
       public async Task<Customer> UpdateAsync(CustomerUpdateRequest customer)
       {
-         Customer data = await _customerRepository.GetAsync(customer.Id);
+         Customer data = await _customerRepository.FindAsync(customer.Id);
          if (data == null)
          {
             return null;
          }
          data.UpdateEmail(new Email(customer.Email));
          data.UpdateName(new Name(customer.Name));
-         data.UpdateStatus(customer.Status);
-         await _customerRepository.UpdateAsync(data);
+         data.UpdateStatus(customer.Status);         
          return data;
       }
    }

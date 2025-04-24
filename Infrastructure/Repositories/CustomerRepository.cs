@@ -44,6 +44,16 @@ namespace Infrastructure.Repositories
          return Task.CompletedTask;
       }
 
+      public async Task<Customer> FindAsync(params object[] keyValues)
+      {
+         return await _dataAccess.Customers.FindAsync(keyValues);
+      }
+
+      public Task<Customer> FindAsync(Expression<Func<Customer, bool>> where)
+      {
+         return _dataAccess.Customers.Where(where).FirstOrDefaultAsync();
+      }
+
       public async Task<IEnumerable<Customer>> GetAllAsync<Tkey>(Expression<Func<Customer, Tkey>> orderBy)
       {
          return await _dataAccess
@@ -62,13 +72,20 @@ namespace Infrastructure.Repositories
             .FirstOrDefaultAsync();
       }
 
+      public Task<Customer> GetAsync(Expression<Func<Customer, bool>> where)
+      {
+         return _dataAccess
+            .Customers
+            .AsNoTracking()
+            .Where(where)
+            .FirstOrDefaultAsync();
+      }
+
       public Task UpdateAsync(Customer value)
       {
-         return Task.Run(() =>
-         {
-            _dataAccess.Entry(value).State = EntityState.Modified;
-            _dataAccess.Update(value);
-         });
+         _dataAccess.Entry(value).State = EntityState.Modified;
+         _dataAccess.Customers.Update(value);
+         return Task.CompletedTask;
       }
    }
 }

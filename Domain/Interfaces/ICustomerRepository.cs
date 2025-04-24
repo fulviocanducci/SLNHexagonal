@@ -8,7 +8,8 @@ namespace Domain.Interfaces
       IAddAsync<Customer>,
       IUpdateAsync<Customer>,
       IDeleteAsync<Customer, long>,
-      IAnyAsync<Customer>
+      IAnyAsync<Customer>,
+      IFindAsync<Customer, long>
    {
    }
 }

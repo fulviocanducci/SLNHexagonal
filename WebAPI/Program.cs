@@ -9,6 +9,7 @@ namespace WebAPI
          WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
          ConfigurationManager configuration = builder.Configuration;
 
+         builder.Services.AddFluentValidation();
          builder.Services.AddControllers();
          builder.Services.AddEndpointsApiExplorer();
          builder.Services.AddSwaggerGen();
