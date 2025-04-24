@@ -61,16 +61,16 @@ namespace Infrastructure.Repositories
 
       public Customer Get(long id)
       {
-         return _dataAccess
-            .Customers
-            .AsNoTracking()
-            .Where(x => x.Id == id)
-            .FirstOrDefault();
+         return Get(x => x.Id == id);
       }
 
       public Customer Get(Expression<Func<Customer, bool>> where)
       {
-         return Get(where);
+         return _dataAccess
+            .Customers
+            .AsNoTracking()
+            .Where(where)
+            .FirstOrDefault();
       }
 
       public async Task<IEnumerable<Customer>> GetAllAsync<Tkey>(Expression<Func<Customer, Tkey>> orderBy)
