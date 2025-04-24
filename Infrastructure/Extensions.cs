@@ -23,6 +23,7 @@ namespace Infrastructure
          });
          services.AddScoped<IUnitOfWork, UnitOfWork>();
          services.AddScoped<ICustomerRepository, CustomerRepository>();
+         services.AddScoped<ILabelRepository, LabelRepository>();
          return services;
       }
    }

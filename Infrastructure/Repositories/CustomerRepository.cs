@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
 {
-   internal class CustomerRepository : ICustomerRepository
+   public sealed class CustomerRepository : ICustomerRepository
    {
       private readonly DataAccess _dataAccess;
 

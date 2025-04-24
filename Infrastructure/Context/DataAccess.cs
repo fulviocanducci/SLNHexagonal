@@ -7,6 +7,7 @@ namespace Infrastructure.Context
    {
       public DataAccess(DbContextOptions<DataAccess> options) : base(options) { }
       public DbSet<Customer> Customers { get; set; }
+      public DbSet<Label> Labels { get; set; }
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
          modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataAccess).Assembly);

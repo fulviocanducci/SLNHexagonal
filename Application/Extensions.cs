@@ -15,6 +15,7 @@ namespace Application
          TypeAdapterConfig.GlobalSettings.Scan(typeof(CustomerMapper).Assembly);         
          services.AddMapster();
          services.AddScoped<ICustomerService, CustomerService>();
+         services.AddScoped<ILabelService, LabelService>();
          return services;
       }
       public static IServiceCollection AddFluentValidation(this IServiceCollection services)
