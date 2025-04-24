@@ -27,8 +27,13 @@ namespace Application.Services
 
       public async Task<Label> UpdateAsync(LabelUpdateRequest label)
       {
-         Label data = label.Adapt<Label>();
-         await _labelRepository.UpdateAsync(data);
+         Label data = await _labelRepository.FindAsync(label.Id);
+         if (data.Description.CompareTo(label.Description) == 0)
+         {
+            return data;
+         }
+         data.UpdateDescription(label.Description);
+         data.UpdateUpdatedAt(DateTime.UtcNow);         
          return data;
       }
 

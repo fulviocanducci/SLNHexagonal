@@ -16,7 +16,7 @@ namespace Infrastructure.Context.Mappings
             .ValueGeneratedOnAdd();
 
          builder.Property(c => c.Description)
-            .HasColumnName("decription")
+            .HasColumnName("description")
             .HasMaxLength(100)
             .IsRequired();
 

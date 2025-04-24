@@ -28,5 +28,25 @@ namespace Domain.Entities
       public string Description { get; private set; }
       public DateTime CreatedAt { get; private set; }
       public DateTime UpdatedAt { get; private set; }
+
+      public void UpdateDescription(string description)
+      {
+         Description = description ?? throw new ArgumentNullException(nameof(description));
+         UpdatedAt = DateTime.UtcNow;
+      }
+      public void UpdateCreatedAt(DateTime createdAt)
+      {
+         CreatedAt = createdAt;
+      }
+      public void UpdateUpdatedAt(DateTime updatedAt)
+      {
+         UpdatedAt = updatedAt;
+      }
+      public void UpdateLabel(string description, DateTime createdAt, DateTime updatedAt)
+      {
+         Description = description ?? throw new ArgumentNullException(nameof(description));
+         CreatedAt = createdAt;
+         UpdatedAt = updatedAt;
+      }
    }
 }
