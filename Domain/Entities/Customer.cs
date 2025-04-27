@@ -9,41 +9,35 @@ namespace Domain.Entities
       public Email Email { get; private set; }
       public DateTime CreatedAt { get; private set; }
       public bool Status { get; private set; }
-
-      protected Customer() { }
-
-      public Customer(long id, Name name, Email email)
+      private void UpdateAll(long id, Name name, Email email, DateTime createdAt, bool status)
       {
          Id = id;
          Name = name ?? throw new ArgumentNullException(nameof(name));
          Email = email ?? throw new ArgumentNullException(nameof(email));
-         CreatedAt = DateTime.UtcNow;
-         Status = true;
+         CreatedAt = createdAt;
+         Status = status;
+      }
+
+      protected Customer() { }      
+
+      public Customer(long id, Name name, Email email)
+      {
+         UpdateAll(id, name, email, DateTime.UtcNow, true);
       }
 
       public Customer(long id, Name name, Email email, bool status)
       {
-         Id = id;
-         Name = name ?? throw new ArgumentNullException(nameof(name));
-         Email = email ?? throw new ArgumentNullException(nameof(email));
-         CreatedAt = DateTime.UtcNow;
-         Status = status;
+         UpdateAll(id, name, email, DateTime.UtcNow, status);         
       }
 
       public Customer(Name name, Email email)
       {
-         Name = name ?? throw new ArgumentNullException(nameof(name));
-         Email = email ?? throw new ArgumentNullException(nameof(email));
-         CreatedAt = DateTime.UtcNow;
-         Status = true;
+         UpdateAll(0, name, email, DateTime.UtcNow, true);
       }
 
       public Customer(Name name, Email email, bool status)
       {
-         Name = name ?? throw new ArgumentNullException(nameof(name));
-         Email = email ?? throw new ArgumentNullException(nameof(email));
-         CreatedAt = DateTime.UtcNow;
-         Status = status;
+         UpdateAll(0, name, email, DateTime.UtcNow, status);
       }
 
       public Customer Activate()
@@ -54,9 +48,7 @@ namespace Domain.Entities
 
       public Customer Toggle()
       {
-         Status = Status == true
-            ? false
-            : true;
+         Status = !Status;
          return this;
       }
 
